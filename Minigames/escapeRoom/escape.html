@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+    <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="room">
+            <div id="incomplete">
+                <img id="computer" src="computer.png" onclick="tryComputer()">
+                <img id="chest" src="chest.png" onclick="tryChest()" >
+                <div id="lockScreen">
+                    <div><img id="close" src="close.png" onclick="exitLockScreen()"></div>
+                    <img id="key" src="key.png" onclick="tryKey()">
+                    <div id="dropboxlogin">
+                        <img  src="dropbox.png">
+                        <form onSubmit="submitPassword(event)">
+                            <input type="text" id="passwordInput" placeholder="Enter Password" required></input>
+                            <button type="submit">Submit</button> 
+                        </form>
+                    </div>
+                </div>
+                <div id="homeScreen">
+                    <div><img id="close" src="close.png" onclick="exitHomeScreen()"></div>
+                    <div id="fileOpen" onclick="openFile()"></div>
+                </div>
+                <div id="code" >
+                    <div><img id="close" src="close.png" onclick="exitFile()"></div>
+                    <div>
+                        <img id="codePic" src="code.png">
+                    </div>
+                    
+                    <form id="codeSubmit" onSubmit="submitCode(event)">
+                        <input type="text" required id="input"></input>
+                        <div id="buttons">
+                            <button type="submit">submit</input> 
+                            <button type="button" onclick="cancelSubmitCode()">cancel</input> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="complete">
+                <h1 id="endMessage">You found the bug!</h1>
+                <div id="endButtons">
+                    <button type = "button" onclick="returnHome()" id="endButton">BASH!</button>
+                    <button type = "button" onclick="returnHome()" id="endButton">IT!</button>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            var passwordEntered = false;
+            var foundKey = false; 
+            var chestOpened = false;
+            function exitFile (){
+                document.getElementById("code").style.visibility = "hidden";
+                openHomeScreeen();
+            }
+            function returnHome(){
+                localStorage.setItem("escape", true);
+                window.location.href = "/index.html";
+            }
+            function openComputer(){
+                document.getElementById("home").style.visibility = "visible"; 
+                document.getElementById("icon").style.visibility = "visible"; 
+            }
+            function openHomeScreeen(){
+                document.getElementById("homeScreen").style.visibility = "visible"; 
+            }
+            function tryKey(){
+                document.getElementById("key").style.visibility="hidden";
+                alert("You found a key!")
+                foundKey = true;
+            }
+            function tryLock(){
+                console.log("Need to enter password");
+                document.getElementById("password").style.visibility = "visible"; 
+            }
+            function openLockScreeen(){
+                document.getElementById("lockScreen").style.visibility="visible";
+                if(!foundKey){
+                    document.getElementById("key").style.visibility="visible";
+                }
+            }
+            function exitLockScreen(){
+                backToHome();
+                closeLockScreen();
+            }
+            function exitHomeScreen(){
+                backToHome();
+                // document.getElementById("password").style.visibility="hidden";
+                closeHomeScreen();
+            }
+            function backToHome(){
+                document.getElementById("chest").style.visibility = "visible";
+                document.getElementById("computer").style.visibility = "visible";
+            }
+            function closeHomeScreen(){
+                document.getElementById("homeScreen").style.visibility = "hidden"; 
+            }
+            function closeLockScreen(){
+                document.getElementById("lockScreen").style.visibility="hidden";
+                document.getElementById("key").style.visibility="hidden";
+                // document.getElementById("password").style.visibility = "hidden"; 
+            }
+            function tryPassword(){
+                document.getElementById("password").style.visibility = "visible"; 
+            }
+            function tryComputer(){
+                console.log("You clicked the computer")
+                document.getElementById("chest").style.visibility = "hidden";
+                document.getElementById("computer").style.visibility = "hidden";
+                if (passwordEntered){
+                    openHomeScreeen();
+                }else{
+                    openLockScreeen();
+                    
+                }
+            }
+            function tryChest(){
+                if(!foundKey){
+                    alert("You need a key to open this chest!");
+                }else if(!chestOpened){
+                    chestOpened = true;
+                    alert("The password is bashdatbug")
+                }else{
+                    alert("You already opened this chest");
+                }
+            }
+            function openFile(){
+                console.log("You clicked the bugged file")
+                document.getElementById("chest").style.visibility = "hidden";
+                document.getElementById("computer").style.visibility = "hidden";
+                document.getElementById("code").style.visibility = "visible"; 
+            }
+            function submitCode(e){
+                e.preventDefault();
+                var input = document.getElementById("input").value;
+                console.log(input)
+                if(input == "if bar == True:"){
+                    document.getElementById("incomplete").style.display = "none"; 
+                    document.getElementById("complete").style.visibility = "visible"; 
+                }else{
+                    alert("Please try again");
+                }
+            }
+            function cancelSubmitCode(){
+                console.log("cancel code submission");
+                document.getElementById("code").style.visibility = "hidden"; 
+            }
+            function submitPassword(e){
+                e.preventDefault();
+                var entered = document.getElementById("passwordInput").value
+                if(entered == "bashdatbug"){
+                    passwordEntered = true;
+                    // document.getElementById("password").style.visibility = "hidden"; 
+                    closeLockScreen();
+                    openHomeScreeen();
+                }else{
+                    alert("Wrong password!");
+                }
+            }
+            function cancelSubmitPassword(){
+                document.getElementById("password").style.visibility = "hidden"; 
+            }
+        </script>
+    </body>
+</html>
